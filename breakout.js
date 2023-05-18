@@ -13,7 +13,15 @@ const player = {
     color: "red",
     speed: 5,
 };
-
+const ball = {
+    x: game.grid * 7, 
+    y: game.grid * 5, 
+    w: game.grid / 3,
+    h: game.grid / 3,
+    color: "green",
+    dx: 5,
+    dy: 5,
+};
 const keyz = {ArrowLeft:false, ArrowRight:false};
 
 
@@ -31,7 +39,6 @@ document.addEventListener("keyup", (e) => {
     console.log(keyz);
 })
 document.addEventListener("mousemove", (e) => {
-    console.log(e);
     const val = e.clientX - canvas.offsetLeft;
 
     if(val > player.w && val < canvas.width) {
@@ -46,13 +53,42 @@ function movement() {
     if(keyz.ArrowRight) {player.x += player.speed}
 }
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    movement();
+function ballMove() {
+    //reverses direction of the ball when it hits the side
+    if(ball.x > canvas.width || ball.x < 0) {ball.dx *= -1;}
+    if(ball.y > canvas.height || ball.y < 0) {ball.dy *= -1;}
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+}
+
+function drawBall() {
+    ctx.beginPath();
+    ctx.strokeStyle = "white";
+    ctx.rect(ball.x, ball.y, ball.w, ball.h)
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = ball.color;
+    let adj = ball.w / 2;
+    ctx.arc(ball.x + adj, ball.y + adj, ball.w / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawPlayer() {
     ctx.beginPath();
     ctx.rect(player.x, player.y, player.w, player.h)
     ctx.fillStyle = player.color;
     ctx.fill();
     ctx.closePath();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    movement();
+    ballMove();
+    drawPlayer();
+    drawBall();
     game.ani = requestAnimationFrame(draw);
 }
