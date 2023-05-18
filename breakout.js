@@ -2,7 +2,8 @@ const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 document.body.prepend(canvas);
 
-const game = {grid: 40};
+//grid size
+const game = {grid: 40, ani: ""};
 
 const player = {
     x: game.grid * 7, 
@@ -10,6 +11,7 @@ const player = {
     w: game.grid * 2,
     h: game.grid / 2,
     color: "red",
+    speed: 5,
 };
 
 const keyz = {ArrowLeft:false, ArrowRight:false};
@@ -28,13 +30,29 @@ document.addEventListener("keyup", (e) => {
     {keyz[e.code] = false;}
     console.log(keyz);
 })
+document.addEventListener("mousemove", (e) => {
+    console.log(e);
+    const val = e.clientX - canvas.offsetLeft;
 
-draw();
+    if(val > player.w && val < canvas.width) {
+        player.x = val - player.w
+    }
+})
+
+game.ani = requestAnimationFrame(draw);
+
+function movement() {
+    if(keyz.ArrowLeft) {player.x -= player.speed;}
+    if(keyz.ArrowRight) {player.x += player.speed}
+}
 
 function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    movement();
     ctx.beginPath();
     ctx.rect(player.x, player.y, player.w, player.h)
     ctx.fillStyle = player.color;
     ctx.fill();
     ctx.closePath();
+    game.ani = requestAnimationFrame(draw);
 }
