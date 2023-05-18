@@ -174,7 +174,6 @@ function draw() {
         if (ball.dy > -10 && ball.dy < 10) {
             ball.dy --;
         }
-    ball.dy *= -1;
     if (brick.bonus == 1) {
         game.bonus.push({
             x: brick.x,
@@ -272,7 +271,7 @@ function gameWinner() {
 function gameOver() {
     game.gameover = true;
     game.inplay = false;
-    gameOver();
+    console.log("Game Over Click To Start Again");
     cancelAnimationFrame(game.ani);
 }
 
