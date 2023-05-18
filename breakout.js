@@ -1,4 +1,5 @@
 const canvas = document.createElement("canvas");
+canvas.style.background = "black"
 const ctx = canvas.getContext("2d");
 document.body.prepend(canvas);
 
@@ -48,6 +49,7 @@ document.addEventListener("mousemove", (e) => {
 
 game.ani = requestAnimationFrame(draw);
 
+
 function movement() {
     if(keyz.ArrowLeft) {player.x -= player.speed;}
     if(keyz.ArrowRight) {player.x += player.speed}
@@ -90,5 +92,21 @@ function draw() {
     ballMove();
     drawPlayer();
     drawBall();
+    if(collDetection(player, ball)) {
+        ball.dy *= -1;
+        let val1 = ball.x + (ball.w / 2) - player.x;
+        let val2 = val1 - player.w / 2;
+        let val3 = Math.ceil(val2 / (player.w / 10))
+        ball.dx = val3;
+        console.log(val1);
+    };
     game.ani = requestAnimationFrame(draw);
+}
+
+function collDetection(obj1, obj2) {
+    const xAxis = (obj1.x < (obj2.x + obj2.w)) && ((obj1.x + obj1.w) > obj2.x);
+    const yAxis = (obj1.y < (obj2.y + obj2.h)) && ((obj1.y + obj1.h) > obj2.y);
+    const val = xAxis && yAxis;
+    // console.log(xAxis, yAxis);
+    return val; 
 }
